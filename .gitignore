@@ -1,0 +1,5 @@
+PKGBUILD.old
+pkg/
+src/
+*.AppImage
+*.pkg.tar

@@ -4,7 +4,7 @@
 _pkgname=ripcord
 _upkgname=Ripcord
 pkgname=ripcord-appimage
-pkgver=0.2.83
+pkgver=0.2.88
 pkgrel=1
 pkgdesc="A desktop chat client for Discord (and soon Slack)"
 arch=('x86_64')
@@ -16,7 +16,7 @@ depends=('p7zip')
 noextract=("$_upkgname-$pkgver-${CARCH}.AppImage")
 
 source_x86_64=("https://cancel.fm/dl/${_upkgname}-${pkgver}-${CARCH}.AppImage")
-md5sums_x86_64=('5a7a7c702aabd093577f43fb6b90b062')
+md5sums_x86_64=('d0ca78ed2f678ff572774b36c3f7f007')
 
 prepare() {
   cd "${srcdir}"

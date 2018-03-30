@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+require 'json'
+current=`pacman -Q ripcord-appimage`.split(/ |-/)[2]
+remote_info= JSON.parse `curl -ss https://cancel.fm/ripcord/updates/v1 | jq -r '.versions.linux.normal[]'`
+ver=remote_info['file_version']
+if current == ver
+  puts "up to date!"
+  exit 1
+end
+
+puts "upgrading to #{ver}"
+
+url=remote_info['file_url']
+file = "Ripcord-#{ver}-x86_64.AppImage"
+unless File.exists? file
+  `wget #{url}`
+end
+
+md5=`md5sum #{file}`.split(' ')[0]
+puts md5
+
+pkgbuild = "PKGBUILD_#{ver}"
+File.open pkgbuild, "w" do |pk|
+  File.open "PKGBUILD" do |f|
+    f.readlines.each do |line|
+      if line =~ /^md5sums_x86_64=/
+        pk.puts "md5sums_x86_64=('#{md5}')"
+      elsif line =~ /^pkgver=/
+        pk.puts "pkgver=#{ver}"
+      else
+        pk.puts line
+      end
+    end
+  end
+end
+
+File.rename "PKGBUILD", "PKGBUILD.old"
+File.rename pkgbuild, "PKGBUILD"
+
+`makepkg -f`
+`sudo pacman -U ripcord-appimage-#{ver}-1-x86_64.pkg.tar`
